@@ -6,4 +6,7 @@ export default defineConfig({
       entry: "server",
     },
   },
+  build: {
+    chunkSizeWarningLimit: 2000,
+  }
 });
