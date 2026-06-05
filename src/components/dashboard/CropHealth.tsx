@@ -13,6 +13,65 @@ export function CropHealth() {
 
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [geoError, setGeoError] = useState<boolean>(false);
+  const [scanResult, setScanResult] = useState<string | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
+
+  const handleScan = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !GEMINI_API_KEY) return;
+
+    setIsScanning(true);
+    setScanResult(null);
+
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64Image = (reader.result as string).split(',')[1];
+        
+        const prompt = `You are Kisawan AI, an expert plant pathologist. 
+Analyze this image of a plant/leaf. 
+1. Identify the crop if possible.
+2. Detect any diseases, pests, or nutrient deficiencies.
+3. Provide a short, farmer-friendly diagnosis.
+4. Give 3 actionable treatment steps.
+Keep the response under 100 words. Return plain text only, no markdown.`;
+
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: "user",
+                  parts: [
+                    { text: prompt },
+                    {
+                      inlineData: {
+                        mimeType: file.type,
+                        data: base64Image
+                      }
+                    }
+                  ]
+                }
+              ],
+              generationConfig: { temperature: 0.2 }
+            })
+          }
+        );
+
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Failed to analyze image.";
+        setScanResult(text);
+        setIsScanning(false);
+      };
+    } catch (err) {
+      setScanResult("An error occurred during the scan. Please try again.");
+      setIsScanning(false);
+    }
+  };
 
   useEffect(() => {
     if (typeof navigator !== "undefined" && "geolocation" in navigator) {
@@ -397,12 +456,26 @@ No explanations outside JSON.`;
                   </div>
                 </div>
               </div>
-              <label className="grid cursor-pointer place-items-center rounded-2xl border border-dashed border-white/10 bg-slate-950/40 py-8 text-center transition-colors hover:border-emerald-500/50 flex-1 mt-4">
-                <Upload className="mb-2 h-6 w-6 text-emerald-400" />
-                <p className="text-xs font-medium text-slate-300">Drop image or click to upload</p>
-                <p className="text-[10px] text-muted-foreground mt-1">JPG, PNG · max 10MB</p>
-                <input type="file" accept="image/*" className="hidden" />
-              </label>
+              
+              {scanResult ? (
+                <div className="mt-4 flex-1 overflow-y-auto text-sm text-slate-200 bg-slate-950/40 p-4 rounded-xl border border-white/10">
+                  <p className="whitespace-pre-wrap leading-relaxed">{scanResult}</p>
+                  <button onClick={() => setScanResult(null)} className="mt-4 text-emerald-400 text-xs font-medium hover:underline flex items-center gap-1">
+                    Scan another image
+                  </button>
+                </div>
+              ) : (
+                <label className="grid cursor-pointer place-items-center rounded-2xl border border-dashed border-white/10 bg-slate-950/40 py-8 text-center transition-colors hover:border-emerald-500/50 flex-1 mt-4">
+                  {isScanning ? (
+                     <Loader2 className="mb-2 h-6 w-6 text-emerald-400 animate-spin" />
+                  ) : (
+                     <Upload className="mb-2 h-6 w-6 text-emerald-400" />
+                  )}
+                  <p className="text-xs font-medium text-slate-300">{isScanning ? "Analyzing..." : "Drop image or click to upload"}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">JPG, PNG · max 10MB</p>
+                  <input type="file" accept="image/*" className="hidden" onChange={handleScan} disabled={isScanning} />
+                </label>
+              )}
             </div>
 
             <div className="glass rounded-3xl p-8 min-h-[240px] border-white/5 flex flex-col justify-between">

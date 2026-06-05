@@ -109,14 +109,6 @@ Soil Data: ${sgString}
     setMsgs((m) => [...m, { role: "user", text }]);
     setInput("");
 
-    const lowerText = text.toLowerCase();
-    const isTopicValid = VALID_KEYWORDS.some(keyword => lowerText.includes(keyword));
-
-    if (!isTopicValid) {
-      setMsgs((m) => [...m, { role: "ai", text: "I am Kisawan AI. I can only assist with agriculture, farming, weather, and farmer health related topics." }]);
-      return; 
-    }
-
     setMsgs((m) => [...m, { role: "ai", text: "Analyzing query with full environmental awareness..." }]);
 
     try {
