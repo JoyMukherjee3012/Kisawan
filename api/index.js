@@ -1,5 +1,11 @@
 import server from '../dist/server/index.js';
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export default async function handler(req, res) {
   const protocol = req.headers['x-forwarded-proto'] || 'http';
   const url = new URL(req.url, `${protocol}://${req.headers.host}`);
