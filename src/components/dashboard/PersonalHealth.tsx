@@ -151,10 +151,11 @@ export function PersonalHealth({
   age,
 }: { displayName?: string; age?: number | null } = {}) {
   
+  const [historyDays, setHistoryDays] = useState<number>(7);
   const { 
     data, history, wellnessLog, isConnected, isDemoMode, error, 
     requestPermissions, updateWellnessLog 
-  } = useHealthTracking();
+  } = useHealthTracking(historyDays);
 
   const [showBMIEdit, setShowBMIEdit] = useState(false);
   const [showTargetsEdit, setShowTargetsEdit] = useState(false);
@@ -364,9 +365,9 @@ export function PersonalHealth({
                 Health History <span className="text-slate-400 font-normal text-sm">(Real Data)</span>
               </h3>
               <div className="flex bg-[#111e22] rounded-full p-1 border border-white/5">
-                <button className="px-4 py-1 text-xs font-bold bg-[#00e5ff]/20 text-[#00e5ff] rounded-full">7D</button>
-                <button className="px-4 py-1 text-xs font-medium text-slate-400 hover:text-slate-200">30D</button>
-                <button className="px-4 py-1 text-xs font-medium text-slate-400 hover:text-slate-200">90D</button>
+                <button onClick={() => setHistoryDays(7)} className={`px-4 py-1 text-xs font-bold rounded-full transition ${historyDays === 7 ? "bg-[#00e5ff]/20 text-[#00e5ff]" : "text-slate-400 hover:text-slate-200"}`}>7D</button>
+                <button onClick={() => setHistoryDays(30)} className={`px-4 py-1 text-xs font-bold rounded-full transition ${historyDays === 30 ? "bg-[#00e5ff]/20 text-[#00e5ff]" : "text-slate-400 hover:text-slate-200"}`}>30D</button>
+                <button onClick={() => setHistoryDays(90)} className={`px-4 py-1 text-xs font-bold rounded-full transition ${historyDays === 90 ? "bg-[#00e5ff]/20 text-[#00e5ff]" : "text-slate-400 hover:text-slate-200"}`}>90D</button>
               </div>
             </div>
             

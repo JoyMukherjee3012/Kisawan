@@ -22,7 +22,7 @@ export interface WellnessLog {
   stress: number; // 1-10
 }
 
-export function useHealthTracking() {
+export function useHealthTracking(historyDays: number = 7) {
   const { user } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -37,7 +37,7 @@ export function useHealthTracking() {
     location: null,
   });
 
-  const [history, setHistory] = useState<{ day: string; score: number; sleep: number; water: number }[]>([]);
+  const [history, setHistory] = useState<{ day: string; date: string; score: number; steps: number; sleep: number; water: number; waterLiters: number; sleepHours: number }[]>([]);
 
   const [wellnessLog, setWellnessLog] = useState<WellnessLog>({
     sleepHours: 0,
@@ -83,7 +83,7 @@ export function useHealthTracking() {
         }
         
         // Load history
-        const q = query(collection(db, "users", user.uid, "health_data"), orderBy("updatedAt", "desc"), limit(7));
+        const q = query(collection(db, "users", user.uid, "health_data"), orderBy("updatedAt", "desc"), limit(historyDays));
         const querySnapshot = await getDocs(q);
         const historyData: any[] = [];
         querySnapshot.forEach((docSnap) => {
@@ -103,9 +103,13 @@ export function useHealthTracking() {
 
           historyData.push({
             day: dayName,
+            date: dateStr,
             score: Math.round(score),
+            steps: d.steps || 0,
             sleep: d.wellness?.sleepHours || 0,
             water: d.wellness?.waterLiters || 0,
+            waterLiters: d.wellness?.waterLiters || 0,
+            sleepHours: d.wellness?.sleepHours || 0,
           });
         });
         setHistory(historyData.reverse());
@@ -115,7 +119,7 @@ export function useHealthTracking() {
       }
     }
     loadTodayData();
-  }, [user]);
+  }, [user, historyDays]);
 
   // Sync to Firebase periodically when connected
   useEffect(() => {
