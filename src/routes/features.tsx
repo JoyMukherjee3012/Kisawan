@@ -20,6 +20,7 @@ const items = [
   { i: <FlaskConical className="w-6 h-6" />, t: "Soil Engine", d: "Deep analysis of NPK, pH, and soil composition via SoilGrids API." },
   { i: <Sprout className="w-6 h-6" />, t: "Crop Matching", d: "Discover the top 5 most suitable crops precisely matched to your soil." },
   { i: <Brain className="w-6 h-6" />, t: "Farming Advisor", d: "AI-generated alerts for heat stress, drought, and smart irrigation." },
+  { i: <Thermometer className="w-6 h-6" />, t: "Yield Forecast", d: "Predict harvest outcomes and seasonal trends with advanced ML models." },
   { i: <ShieldCheck className="w-6 h-6" />, t: "Private by Design", d: "Your health and farm data is securely encrypted and entirely yours." },
 ];
 
@@ -56,7 +57,7 @@ function Features() {
       </motion.div>
 
       <motion.div 
-        className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
