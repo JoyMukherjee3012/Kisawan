@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Activity, Brain, CloudRain, Droplets, FlaskConical, Leaf, Moon, ShieldCheck, Sprout, Sun, Thermometer, Bot } from "lucide-react";
+import { Activity, CloudRain, Droplets, FlaskConical, HeartPulse, Leaf, LineChart, Sprout, TestTube } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/features")({
@@ -13,15 +13,15 @@ export const Route = createFileRoute("/features")({
 });
 
 const items = [
-  { i: <Activity className="w-6 h-6" />, t: "Health Tracking", d: "Automatic tracking of steps, distance, and calories using motion sensors." },
-  { i: <Moon className="w-6 h-6" />, t: "Wellness Log", d: "Track your daily sleep, water intake, mood, and stress levels over time." },
-  { i: <Leaf className="w-6 h-6" />, t: "Disease Scan", d: "Upload a leaf photo for instant AI-powered diagnostics and treatment steps." },
-  { i: <CloudRain className="w-6 h-6" />, t: "Weather AI", d: "Hyper-local AccuWeather forecasts, UV index, and environmental metrics." },
-  { i: <FlaskConical className="w-6 h-6" />, t: "Soil Engine", d: "Deep analysis of NPK, pH, and soil composition via SoilGrids API." },
-  { i: <Sprout className="w-6 h-6" />, t: "Crop Matching", d: "Discover the top 5 most suitable crops precisely matched to your soil." },
-  { i: <Brain className="w-6 h-6" />, t: "Farming Advisor", d: "AI-generated alerts for heat stress, drought, and smart irrigation." },
-  { i: <Thermometer className="w-6 h-6" />, t: "Yield Forecast", d: "Predict harvest outcomes and seasonal trends with advanced ML models." },
-  { i: <ShieldCheck className="w-6 h-6" />, t: "Private by Design", d: "Your health and farm data is securely encrypted and entirely yours." },
+  { i: <Activity className="w-6 h-6" />, t: "Activity Tracking", d: "Track steps, distance, and active minutes using device motion sensors." },
+  { i: <HeartPulse className="w-6 h-6" />, t: "Wellness Logging", d: "Monitor your daily sleep, water intake, mood, and stress levels." },
+  { i: <LineChart className="w-6 h-6" />, t: "Health History", d: "Visualize your 7-day personal health and wellness performance scores." },
+  { i: <Leaf className="w-6 h-6" />, t: "Disease Scan", d: "Upload a crop photo for instant AI-powered diagnostics and treatment steps." },
+  { i: <CloudRain className="w-6 h-6" />, t: "Weather Analysis", d: "Real-time hyper-local conditions, UV index, and 5-day forecasts." },
+  { i: <FlaskConical className="w-6 h-6" />, t: "Soil Engine", d: "Deep analysis of soil composition, pH, and fertility levels via SoilGrids." },
+  { i: <Sprout className="w-6 h-6" />, t: "Crop Recommendations", d: "Discover the top 5 most suitable crops precisely matched to your soil." },
+  { i: <Droplets className="w-6 h-6" />, t: "Smart Irrigation", d: "Get precise, AI-generated watering schedules for your field." },
+  { i: <TestTube className="w-6 h-6" />, t: "Fertilizer Advisor", d: "Receive tailored nutrient and organic fertilizer recommendations." },
 ];
 
 const containerVariants = {
