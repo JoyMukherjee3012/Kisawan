@@ -89,19 +89,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsub = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u) {
-        // Ensure a Firestore user doc exists (covers Google sign-in)
-        const ref = doc(db, "users", u.uid);
-        const snap = await getDoc(ref);
-        if (!snap.exists()) {
-          await setDoc(ref, {
-            uid: u.uid,
-            fullName: u.displayName ?? "",
-            email: u.email ?? "",
-            dob: null,
-            createdAt: serverTimestamp(),
-          });
+        try {
+          // Ensure a Firestore user doc exists (covers Google sign-in)
+          const ref = doc(db, "users", u.uid);
+          const snap = await getDoc(ref);
+          if (!snap.exists()) {
+            await setDoc(ref, {
+              uid: u.uid,
+              fullName: u.displayName ?? "",
+              email: u.email ?? "",
+              dob: null,
+              createdAt: serverTimestamp(),
+            });
+          }
+          setProfile(await loadProfile(u.uid));
+        } catch (error) {
+          console.error("Error loading user profile:", error);
         }
-        setProfile(await loadProfile(u.uid));
       } else {
         setProfile(null);
       }

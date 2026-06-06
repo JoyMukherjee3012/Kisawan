@@ -21,7 +21,3 @@ export const auth = getAuth(firebaseApp);
 export const db = getFirestore(firebaseApp);
 export const googleProvider = new GoogleAuthProvider();
 
-// Persist sessions in the browser (no-op on server)
-if (typeof window !== "undefined") {
-  setPersistence(auth, browserLocalPersistence).catch(() => {});
-}
