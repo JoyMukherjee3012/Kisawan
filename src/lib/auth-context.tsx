@@ -86,26 +86,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (u) => {
+    const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
       if (u) {
-        try {
-          // Ensure a Firestore user doc exists (covers Google sign-in)
-          const ref = doc(db, "users", u.uid);
-          const snap = await getDoc(ref);
-          if (!snap.exists()) {
-            await setDoc(ref, {
-              uid: u.uid,
-              fullName: u.displayName ?? "",
-              email: u.email ?? "",
-              dob: null,
-              createdAt: serverTimestamp(),
-            });
+        // Fetch profile in the background so we don't block rendering
+        (async () => {
+          try {
+            // Ensure a Firestore user doc exists (covers Google sign-in)
+            const ref = doc(db, "users", u.uid);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) {
+              await setDoc(ref, {
+                uid: u.uid,
+                fullName: u.displayName ?? "",
+                email: u.email ?? "",
+                dob: null,
+                createdAt: serverTimestamp(),
+              });
+            }
+            setProfile(await loadProfile(u.uid));
+          } catch (error) {
+            console.error("Error loading user profile:", error);
           }
-          setProfile(await loadProfile(u.uid));
-        } catch (error) {
-          console.error("Error loading user profile:", error);
-        }
+        })();
       } else {
         setProfile(null);
       }
