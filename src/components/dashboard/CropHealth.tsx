@@ -267,7 +267,7 @@ Give a short summary of:
 Maximum 2 sentences.
 
 2. Best Crops
-CRITICAL: You MUST recommend EXACTLY 5 best crops. No more, no less.
+CRITICAL: You MUST recommend EXACTLY 5 best crops. No more, no less. Make sure to include all kinds of crops in your consideration, including fruits, vegetables, cash crops (like cotton), and grains.
 For each crop provide:
 Crop Name
 Suitability Percentage

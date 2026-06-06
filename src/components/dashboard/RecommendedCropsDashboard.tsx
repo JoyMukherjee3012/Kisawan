@@ -265,7 +265,7 @@ JSON STRUCTURE REQUIRED:
     }
   ]
 }
-CRITICAL: Include exactly 5 topCrops, and exactly 10 additionalCrops. Minimum 15 total.`;
+CRITICAL: Include exactly 5 topCrops, and exactly 10 additionalCrops. Minimum 15 total. Make sure to include all kinds of crops in your recommendations, including fruits, vegetables, cash crops (like cotton), and grains.`;
 
       try {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
