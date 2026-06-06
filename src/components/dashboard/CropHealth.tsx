@@ -31,11 +31,11 @@ export function CropHealth() {
         
         const prompt = `You are Kisawan AI, an expert plant pathologist. 
 Analyze this image of a plant/leaf. 
-1. Identify the crop if possible.
+1. Identify the crop.
 2. Detect any diseases, pests, or nutrient deficiencies.
-3. Provide a short, farmer-friendly diagnosis.
-4. Give 3 actionable treatment steps.
-Keep the response under 100 words. Return plain text only, no markdown.`;
+3. Provide a very short, precise diagnosis.
+4. Give max 3 actionable treatment steps as extremely short bullet points.
+Keep the response under 50 words total. Return plain text only, no markdown formatting. Be direct and concise.`;
 
         const res = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
