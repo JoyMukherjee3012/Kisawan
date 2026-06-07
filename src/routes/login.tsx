@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch, Navigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2, LogIn } from "lucide-react";
 import { toast } from "sonner";
@@ -45,7 +45,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   if (user) {
-    navigate({ to: "/dashboard" });
+    return <Navigate to={search.redirect ?? "/dashboard"} />;
   }
 
   async function handleSubmit(e: FormEvent) {
