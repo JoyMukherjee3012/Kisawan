@@ -153,8 +153,8 @@ export function PersonalHealth({
   
   const [historyDays, setHistoryDays] = useState<number>(7);
   const { 
-    data, history, wellnessLog, isConnected, isDemoMode, error, 
-    requestPermissions, updateWellnessLog 
+    data, history, wellnessLog, targets, isConnected, isDemoMode, error, 
+    requestPermissions, updateWellnessLog, updateTargets 
   } = useHealthTracking(historyDays);
 
   const [showBMIEdit, setShowBMIEdit] = useState(false);
@@ -164,12 +164,6 @@ export function PersonalHealth({
   const [tempHeight, setTempHeight] = useState(wellnessLog.heightCm || 175);
   const [tempWeight, setTempWeight] = useState(wellnessLog.weightKg || 71.6);
   
-  const [targets, setTargets] = useState({
-    steps: 10000,
-    water: 3.5,
-    calories: 600,
-    activeMinutes: 60
-  });
   const [tempTargets, setTempTargets] = useState(targets);
   
   const tempBmi = useMemo(() => {
@@ -353,7 +347,11 @@ export function PersonalHealth({
                 bmi={bmi} 
                 height={wellnessLog.heightCm || 175} 
                 weight={wellnessLog.weightKg || 71.6} 
-                onEdit={() => setShowBMIEdit(true)} 
+                onEdit={() => {
+                  setTempHeight(wellnessLog.heightCm || 175);
+                  setTempWeight(wellnessLog.weightKg || 71.6);
+                  setShowBMIEdit(true);
+                }} 
               />
             </div>
           </div>
@@ -593,7 +591,7 @@ export function PersonalHealth({
                </div>
             </div>
             <button 
-              onClick={() => { setTargets(tempTargets); setShowTargetsEdit(false); }}
+              onClick={() => { updateTargets(tempTargets); setShowTargetsEdit(false); }}
               className="w-full mt-6 py-3 bg-[#00e5ff] hover:bg-[#00cce6] text-[#05181a] rounded-xl text-sm font-bold transition shadow-[0_0_15px_rgba(0,229,255,0.3)]"
             >
               Save Targets

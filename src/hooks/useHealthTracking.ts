@@ -22,6 +22,13 @@ export interface WellnessLog {
   stress: number; // 1-10
 }
 
+export interface HealthTargets {
+  steps: number;
+  water: number;
+  calories: number;
+  activeMinutes: number;
+}
+
 export function useHealthTracking(historyDays: number = 7) {
   const { user } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
@@ -47,6 +54,13 @@ export function useHealthTracking(historyDays: number = 7) {
     mood: 5,
     energy: 5,
     stress: 5,
+  });
+
+  const [targets, setTargets] = useState<HealthTargets>({
+    steps: 10000,
+    water: 3.5,
+    calories: 600,
+    activeMinutes: 60,
   });
 
   const dataRef = useRef(data);
@@ -79,6 +93,23 @@ export function useHealthTracking(historyDays: number = 7) {
           }));
           if (d.wellness) {
             setWellnessLog((prev) => ({ ...prev, ...d.wellness }));
+          }
+        }
+        
+        // Load persistent profile settings (targets, height, weight)
+        const userDocRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userDocRef);
+        if (userSnap.exists()) {
+          const uData = userSnap.data();
+          if (uData.healthTargets) {
+            setTargets(uData.healthTargets);
+          }
+          if (uData.weightKg || uData.heightCm) {
+            setWellnessLog((prev) => ({
+              ...prev,
+              weightKg: uData.weightKg || prev.weightKg,
+              heightCm: uData.heightCm || prev.heightCm,
+            }));
           }
         }
         
@@ -273,19 +304,41 @@ export function useHealthTracking(historyDays: number = 7) {
     if (user) {
       const today = new Date().toISOString().split("T")[0];
       const docRef = doc(db, "users", user.uid, "health_data", today);
-      setDoc(docRef, { wellness: { ...wellnessRef.current, ...updates } }, { merge: true });
+      setDoc(docRef, { wellness: { ...wellnessRef.current, ...updates }, updatedAt: serverTimestamp() }, { merge: true });
+      
+      // Save weight and height to user profile so they persist across days
+      if (updates.weightKg !== undefined || updates.heightCm !== undefined) {
+        const userDocRef = doc(db, "users", user.uid);
+        setDoc(userDocRef, { 
+          weightKg: updates.weightKg ?? wellnessRef.current.weightKg,
+          heightCm: updates.heightCm ?? wellnessRef.current.heightCm
+        }, { merge: true });
+      }
     }
+  };
+
+  const updateTargets = (newTargets: Partial<HealthTargets>) => {
+    setTargets((prev) => {
+      const updated = { ...prev, ...newTargets };
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        setDoc(userDocRef, { healthTargets: updated }, { merge: true });
+      }
+      return updated;
+    });
   };
 
   return {
     data,
     history,
     wellnessLog,
+    targets,
     isConnected,
     isDemoMode,
     error,
     requestPermissions,
     disconnectPhone,
     updateWellnessLog,
+    updateTargets,
   };
 }
